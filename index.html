@@ -32,10 +32,10 @@
                   new task</a>
                 <form>
                   <ul>
-                    <li v-for="task in tasks" v-bind:key="task.name">
+                    <li @click="updateTasks" v-for="task in tasks" v-bind:key="task.name">
                       <label>
                         <input type="checkbox" v-model="task.isDone">
-                        <span v-bind:class=" { taskDone : task.isDone } ">{{ task.name }}</span> 
+                        <span v-bind:class=" { taskDone : task.isDone } ">{{ task.name }}</span>
                       </label>
                     </li>
                   </ul>
