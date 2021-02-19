@@ -7,21 +7,35 @@ const app = new Vue({
   methods: {
     addTask: function () {
       if (this.newTask.name) {
-        this.tasks.push({ name: this.newTask.name, isDone: false });
+        coleccion
+          .add({
+            name: this.newTask.name,
+            isDone: false,
+          })
+          .then(() => this.$mount());
         this.newTask.name = "";
-        this.updateTasks();
       }
     },
-    updateTasks: function () {
-      localStorage.setItem("tasks", JSON.stringify(this.tasks));
-      console.log("tasks updated");
+    updateTask: function (id) {
+      const currentTask = this.tasks.find((task) => task.id == id);
+      coleccion
+        .doc(id)
+        .set({ name: currentTask.data.name, isDone: !currentTask.data.isDone })
+        .then(() => this.$mount);
     },
-    clearAllTasks: function () {
-      this.tasks.splice(0, this.tasks.length);
+    clearCompletedTasks: function () {
+
     },
   },
   mounted() {
-    if (localStorage.tasks)
-      this.tasks = JSON.parse(localStorage.getItem("tasks"));
+    console.log("Vue mounted");
+    this.tasks = [];
+    coleccion
+      .get()
+      .then((response) =>
+        response.docs.map((item) =>
+          this.tasks.push({ id: item.id, data: item.data() })
+        )
+      );
   },
 });
